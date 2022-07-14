@@ -1,0 +1,68 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+    # TODO: make reload work
+    command: uvicorn app.main:app --host 0.0.0.0 # --reload --reload-dir /app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+      - ./scripts:/scripts
+      - ./sqlite-data:/sqlite-data
+    env_file:
+      - .env
+
+#  postgres:
+#    image: postgres:14-alpine
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      POSTGRES_PASSWORD: 'MyPassw0rd'
+#      POSTGRES_DB: xlwings
+#    volumes:
+#      - ./postgres-data/postgres:/var/lib/postgresql/data
+
+#  mysql:
+#    image: mysql:8
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      MYSQL_DATABASE: xlwings
+#      MYSQL_ROOT_PASSWORD: MyPassw0rd
+#    volumes:
+#      - ./mysql-data:/var/lib/mysql
+
+#  mariadb:
+#    image: mariadb:10
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      MARIADB_DATABASE: xlwings
+#      MARIADB_ROOT_PASSWORD: MyPassw0rd
+#    volumes:
+#      - ./mariadb-data:/var/lib/mysql
+
+#  mssql:
+#    # 120 days evaluation version of Developer edition
+#    image: mcr.microsoft.com/mssql/server:2022-latest
+#    ports:
+#      - "1433:1433"
+#    environment:
+#      ACCEPT_EULA: Y
+#      SA_PASSWORD: MyPassw0rd
+#      MSSQL_PID: Developer
+#    volumes:
+#      - ./mssql-data/data:/var/opt/mssql/data
+
+#  oracle:
+#    # Requires a local build of the image, see README
+#    image: oracle/database:18.4.0-xe
+#    ports:
+#      - "1521:1521"
+#    environment:
+#      ORACLE_PWD: MyPassw0rd
+#    volumes:
+#      - ./oracle-data:/opt/oracle/oradata

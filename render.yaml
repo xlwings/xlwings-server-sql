@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: xlwings-googlesheets-sql
+    env: docker
+    region: ohio
+    plan: free
+    envVars:
+      # These are placeholders for values to be added in the dashboard
+      - key: GOOGLE_ALLOWED_DOMAINS
+        sync: false
+      - key: XLWINGS_LICENSE_KEY
+        sync: false
+      - key: DB_CONNECTION_STRING
+        sync: false

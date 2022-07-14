@@ -1,0 +1,8 @@
+.idea/
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.pytest_cache
+*-data
+!sqlite-data
