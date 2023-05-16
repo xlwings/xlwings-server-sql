@@ -26,36 +26,36 @@ def select_employees(
     db: Session = Depends(get_db),
 ):
     # Spreadsheet objects
-    book = xw.Book(json=data)
-    sheet = book.sheets[0]
-    result_cell = sheet["D1"]
+    with xw.Book(json=data) as book:
+        sheet = book.sheets[0]
+        result_cell = sheet["D1"]
 
-    # Get the query parameters as dictionary
-    params = sheet["A5:B5"].options(dict, expand="down").value
+        # Get the query parameters as dictionary
+        params = sheet["A5:B5"].options(dict, expand="down").value
 
-    # You can log who is running the query
-    logger.info(f"Running 'select employees' query for user {current_user.email}")
+        # You can log who is running the query
+        logger.info(f"Running 'select employees' query for user {current_user.email}")
 
-    # SQL Query using SQLAlchemy placeholders
-    sql = """
-    SELECT *
-    FROM employees
-    WHERE salaried_flag = :salaried_flag
-    """
-    if params["job title"]:
-        sql += "AND LOWER(job_title) LIKE LOWER(:job_title)"
+        # SQL Query using SQLAlchemy placeholders
+        sql = """
+        SELECT *
+        FROM employees
+        WHERE salaried_flag = :salaried_flag
+        """
+        if params["job title"]:
+            sql += "AND LOWER(job_title) LIKE LOWER(:job_title)"
 
-    # Execute the query via SQLAlchemy
-    result = db.execute(
-        text(sql),
-        {
-            "salaried_flag": params["salaried?"],
-            "job_title": f"%{params['job title']}%",
-        },
-    )
+        # Execute the query via SQLAlchemy
+        result = db.execute(
+            text(sql),
+            {
+                "salaried_flag": params["salaried?"],
+                "job_title": f"%{params['job title']}%",
+            },
+        )
 
-    # Delete existing data in the spreadsheet and write the result back
-    result_cell.expand().clear_contents()
-    result_cell.value = process_cursor_result(result)
+        # Delete existing data in the spreadsheet and write the result back
+        result_cell.expand().clear_contents()
+        result_cell.value = process_cursor_result(result)
 
-    return book.json()
+        return book.json()
